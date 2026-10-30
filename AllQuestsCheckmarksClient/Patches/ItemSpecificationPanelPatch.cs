@@ -1,6 +1,6 @@
-﻿using EFT.UI.DragAndDrop;
+using EFT.UI.DragAndDrop;
 using HarmonyLib;
-using SPT.Reflection.Patching;
+using SPTushonka.Reflection.Patching;
 using System.Reflection;
 
 namespace AllQuestsCheckmarks.Patches

@@ -13,3 +13,6 @@ AllQuestsCheckmarks-Server/package-lock.json
 **/obj/
 
 TODO.md
+/Build/
+**/bin/
+**/obj/

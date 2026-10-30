@@ -1,8 +1,8 @@
-﻿using EFT;
+using EFT;
 using EFT.InventoryLogic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SPT.Common.Http;
+using SPTushonka.Common.Http;
 using System.Collections.Generic;
 using System.Linq;
 using ZGFueDkx.ZGCLib.Helpers;
@@ -30,7 +30,7 @@ namespace AllQuestsCheckmarks.Helpers
                 _squadNicks.Add(new MongoID(key), value);
             }
 
-            string response = RequestHandler.PostJson("/all-quests-checkmarks/active-quests", new JArray(squadMembers.Keys).ToJson());
+            string response = RequestHandler.PostJson("/all-quests-checkmarks/active-quests", new JArray(squadMembers.Keys).ToString(Formatting.None));
             _squadData = JsonConvert.DeserializeObject<Dictionary<MongoID, List<Quest>>>(
                 response,
                 JsonSettingsFactory.GetJsonSerializerSettings(Plugin.LogSource)

@@ -1,4 +1,4 @@
-﻿using EFT;
+using EFT;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +52,9 @@ namespace AllQuestsCheckmarks.Helpers
             }
 
             _loadedLocales.Add(localeId);
-            LocalizationManager.Instance.UpdateLocales(localeId, localeDict);
+            var nativeLocale = new Il2CppSystem.Collections.Generic.Dictionary<string, string>();
+            foreach (var pair in localeDict) nativeLocale.Add(pair.Key, pair.Value);
+            LocalizationManager.Instance.UpdateLocales(localeId, nativeLocale);
         }
 
         private static Dictionary<string, string> ReadLocale(string path)

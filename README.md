@@ -1,3 +1,24 @@
+# Local SPT 5.0 / EFT 1.3.0.0.48484 port
+
+Fork: https://github.com/jpeckham/AllQuestsCheckmarks, branch `spt-5.0-eft-1.3.0.0.48484`, based on upstream `dbd973f12772fe868f0a2d7bf926967bab964de5` (1.4.0). Existing public branches/forks and PRs inspected did not provide a 5.0 IL2CPP port. Shared is pinned to the corresponding branch of https://github.com/jpeckham/SPT-ZGFueDkxCommonLibrary as a submodule.
+
+Run `git submodule update --init --recursive`, then build both projects with .NET 10:
+
+```powershell
+dotnet build AllQuestsCheckmarksClient/AllQuestsCheckmarksClient.csproj -c Release
+dotnet build AllQuestsCheckmarksServer/AllQuestsCheckmarksServer.csproj -c Release
+```
+
+Both accept `-p:SPTPath='<game>'`; default is the local 48484 BE installation. With client/server closed, copy the contents of `Build` into that installation. Client files stage under BepInEx/plugins/AllQuestsCheckmarks; server files under SPT_Runtime/user/mods/AllQuestsCheckmarks. No automatic deployment. Preserve the asset bundle, locales, managed Newtonsoft.Json DLL and license notices.
+
+Port changes: BepInXDX BasePlugin; SPTushonka reflection/HTTP APIs; native profile-selection task completion pump; updated quest panel Show signature/generated fields and quest-controller access; explicit native casts; native locale dictionary conversion; explicit sprite subasset loading and retention through Unity startup asset cleanup; native MongoID JSON conversion and Color TOML conversion in Shared; installed SPT 5 server references and updated quest-name fallback. The obsolete ItemSpecificationPanel sprite-field patch is no longer compiled: the quest panel uses the custom sprite directly. Fika bridge is **not ported or supported by this local build**; use standalone SPT.
+
+Validation: client build passed with 30 nullable/unused warnings; server build passed with zero warnings. Read-only endpoint checks passed (790 quests, 16 active item quests). Native client checks passed for 1,174 cached item templates, ID equality, sprite retention and RGBA serialization.
+
+See [tests/README.md](tests/README.md) for repeatable server and client checks, required environment, expected results and cleanup. Normal character selection, tooltip visuals, stash counts and quest progression need manual validation. The upstream 4.x instructions and Fika claims below describe upstream, not this local port.
+
+---
+
 # All Quests Checkmarks
 A mod for SPT that overhauls quest checkmarks for items by checking for future quests and slightly changing how default logic checks for quest items. It also adds detailed description to tooltips that show: how many items are currently in stash, total required items for all quests, active, future quests and other players who need this item (FIKA users only). This mod works only for quest types of: handover item, find item and leave item at Location. Markers, Wi-Fi Cameras and Jammers are completely excluded. This mod also works with FIKA and marks items required for quests of your squad members. This mod completely overrides default logic of checkmarks so other mods that also alter checkmarks will most likely not work!
 

@@ -1,7 +1,7 @@
-﻿using AllQuestsCheckmarks.Helpers;
+using AllQuestsCheckmarks.Helpers;
 using EFT;
 using HarmonyLib;
-using SPT.Reflection.Patching;
+using SPTushonka.Reflection.Patching;
 using System.Reflection;
 
 namespace AllQuestsCheckmarks.Patches
@@ -10,14 +10,14 @@ namespace AllQuestsCheckmarks.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(EftClientBackendSession.CG_SetMainProfile), nameof(EftClientBackendSession.CG_SetMainProfile.method_0));
+            return AccessTools.Method(typeof(EftClientBackendSession), nameof(EftClientBackendSession.SetMainProfile));
         }
 
         [PatchPostfix]
-        static void Postfix()
+        static void Postfix(Il2CppSystem.Threading.Tasks.Task<JsonType.SelectProfileResponse> __result)
         {
             Plugin.LogDebug("Profile selected");
-            QuestsData.LoadData();
+            Plugin.PendingSelection = __result;
         }
     }
 }

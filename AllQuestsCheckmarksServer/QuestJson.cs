@@ -1,4 +1,4 @@
-﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using System.Text.Json.Serialization;
 
@@ -26,7 +26,7 @@ namespace AllQuestsCheckmarks
             AvailableForFinish = availableForFinishCondition ?? AvailableForFinishCondition.FromQuestConditions(quest.Conditions.AvailableForFinish),
         };
 
-        public string? QuestName { get; set; } = quest.QuestName;
+        public string? QuestName { get; set; } = quest.Name;
 
         [JsonPropertyName("name")]
         public string LocalizedName { get; init; } = quest.Name;

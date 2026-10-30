@@ -1,4 +1,4 @@
-﻿using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 
 namespace AllQuestsCheckmarks
 {
@@ -9,7 +9,7 @@ namespace AllQuestsCheckmarks
         public string Author { get; init; } = "ZGFueDkx";
         public List<string>? Contributors { get; init; }
         public SemanticVersioning.Version Version { get; init; } = new("1.4.0");
-        public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
+        public SemanticVersioning.Range SptVersion { get; init; } = new(">=5.0.0-0 <5.1.0-0");
         public List<string>? Incompatibilities { get; init; }
         public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
         public string? Url { get; init; } = "https://github.com/danx91/AllQuestsCheckmarks";

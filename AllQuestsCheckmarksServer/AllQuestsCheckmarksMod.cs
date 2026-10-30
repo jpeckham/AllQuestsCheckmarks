@@ -1,4 +1,4 @@
-﻿using SPTarkov.Common.Models.Logging;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Extensions;
 using SPTarkov.Server.Core.Helpers.Profile;

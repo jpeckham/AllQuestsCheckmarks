@@ -1,6 +1,6 @@
-﻿using EFT;
+using EFT;
 using Newtonsoft.Json;
-using SPT.Common.Http;
+using SPTushonka.Common.Http;
 using System.Collections.Generic;
 using System.Linq;
 using ZGFueDkx.ZGCLib.Helpers;

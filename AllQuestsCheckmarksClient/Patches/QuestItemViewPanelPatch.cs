@@ -1,12 +1,12 @@
-﻿using AllQuestsCheckmarks.Helpers;
+using AllQuestsCheckmarks.Helpers;
 using EFT;
 using EFT.InventoryLogic;
 using EFT.Quests;
 using EFT.UI;
 using EFT.UI.DragAndDrop;
 using HarmonyLib;
-using JetBrains.Annotations;
-using SPT.Reflection.Patching;
+
+using SPTushonka.Reflection.Patching;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
@@ -24,7 +24,23 @@ namespace AllQuestsCheckmarks.Patches
         }
 
         [PatchPrefix]
-        static bool Prefix(Profile profile, Item item, [CanBeNull] SimpleTooltip tooltip, QuestItemViewPanel __instance, Image ____questIconImage,
+        static bool Prefix(QuestController __0, Item __1, SimpleTooltip __2, Il2CppSystem.Action __3, QuestItemViewPanel __instance)
+        {
+            if (__0 == null || __1 == null) return true;
+            var profile = SPTushonka.Reflection.Utils.ClientAppUtils.GetClientApp().GetClientBackEndSession().Profile;
+            if (profile == null) return true;
+            var text = __instance._tooltipText;
+            var tooltip = __instance._tooltip;
+            __instance._showItemTooltip = __3;
+            var result = Render(__0, profile, __1, __2, __instance, __instance._questIconImage,
+                Helpers.Assets.Checkmark ?? __instance._foundInRaidSprite, __instance._questItemSprite,
+                ref text, ref tooltip, __instance._questItemLabel);
+            __instance._tooltipText = text;
+            __instance._tooltip = tooltip;
+            return result;
+        }
+
+        static bool Render(QuestController controller, Profile profile, Item item, SimpleTooltip tooltip, QuestItemViewPanel __instance, Image ____questIconImage,
             Sprite ____foundInRaidSprite, Sprite ____questItemSprite, ref string ____tooltipText, ref SimpleTooltip ____tooltip, TextMeshProUGUI ____questItemLabel)
         {
             __instance.HideGameObject();
@@ -64,9 +80,9 @@ namespace AllQuestsCheckmarks.Patches
             string futureQuestsTooltip = "";
 
             bool useCustomTextColors = Settings.CustomTextColors!.Value;
-            string indent = Settings.BulletPoints!.Value ? "  · " : "  ";
+            string indent = Settings.BulletPoints!.Value ? "  \u00b7 " : "  ";
 
-            if (QuestsHelper.GetActiveQuestsWithItem(profile, item, out Dictionary<MongoID, QuestsHelper.CurrentQuest> activeQuests,
+            if (QuestsHelper.GetActiveQuestsWithItem(controller, item, out Dictionary<MongoID, QuestsHelper.CurrentQuest> activeQuests,
                 out Dictionary<MongoID, QuestsHelper.CurrentQuest> fulfilled))
             {
                 string activeColor = Settings.ActiveQuestTextColor!.GetHexColor(!useCustomTextColors);
@@ -90,7 +106,7 @@ namespace AllQuestsCheckmarks.Patches
 
                     activeQuestsTooltip += $"\n{indent}<color={activeColor}>{quest.Template.Name}</color>: ";
 
-                    if (quest.Condition is ConditionHandoverItem condition
+                    if (quest.Condition.TryCast<ConditionHandoverItem>() is { } condition
                         && profile.TaskConditionCounters.TryGetValue(condition.id, out TaskConditionCounter counter))
                     {
                         if (condition.onlyFoundInRaid)

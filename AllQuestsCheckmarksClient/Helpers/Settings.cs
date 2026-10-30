@@ -1,4 +1,4 @@
-﻿using BepInEx.Configuration;
+using BepInEx.Configuration;
 using UnityEngine;
 using ZGFueDkx.ZGCLib.Config;
 

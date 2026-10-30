@@ -1,4 +1,4 @@
-﻿using EFT;
+using EFT;
 using EFT.InventoryLogic;
 using EFT.Quests;
 using EFT.UI.DragAndDrop;
@@ -60,39 +60,41 @@ namespace AllQuestsCheckmarks.Helpers
                    (item.MarkedAsSpawnedInSession && quests.Total > 0 || quests.NonFir > 0);
         }
 
-        public static bool GetActiveQuestsWithItem(Profile profile, Item item, out Dictionary<MongoID, CurrentQuest> activeQuests,
+        public static bool GetActiveQuestsWithItem(QuestController controller, Item item, out Dictionary<MongoID, CurrentQuest> activeQuests,
             out Dictionary<MongoID, CurrentQuest> fulfilled)
         {
             bool activeNonFir = false;
             activeQuests = [];
             fulfilled = [];
 
-            foreach (QuestDataClass questDataClass in profile.QuestsData)
+            foreach (EFT.Quests.Quest questDataClass in controller.Quests)
             {
                 if (questDataClass.Template is null ||
-                   (questDataClass.Status != EQuestStatus.Started && questDataClass.Status != EQuestStatus.AvailableForFinish))
+                   (questDataClass.QuestStatus != EQuestStatus.Started && questDataClass.QuestStatus != EQuestStatus.AvailableForFinish))
                 {
                     continue;
                 }
 
-                foreach (KeyValuePair<EQuestStatus, ConditionCollection> keyValuePair in questDataClass.Template.Conditions)
+                foreach (var keyValuePair in questDataClass.Conditions)
                 {
-                    keyValuePair.Deconstruct(out _, out ConditionCollection conditions);
+                    if (keyValuePair.Key != EQuestStatus.AvailableForFinish) continue;
+                    ConditionCollection conditions = keyValuePair.Value;
 
                     ConditionItem? tmpCondition = null;
                     bool isFulfilled = false;
 
                     foreach (Condition condition in conditions)
                     {
-                        if (condition is not ConditionItem conditionItem || !conditionItem.target.Contains(item.StringTemplateId))
+                        var conditionItem = condition.TryCast<ConditionItem>();
+                        if (conditionItem == null || conditionItem.target == null || !conditionItem.target.Contains(item.StringTemplateId))
                         {
                             continue;
                         }
 
-                        isFulfilled = questDataClass.CompletedConditions.Contains(condition.id);
+                        isFulfilled = questDataClass.CompletedConditions.Contains(condition);
                         tmpCondition = conditionItem;
 
-                        if (conditionItem is ConditionHandoverItem)
+                        if (conditionItem.TryCast<ConditionHandoverItem>() != null)
                         {
                             break;
                         }
@@ -131,14 +133,16 @@ namespace AllQuestsCheckmarks.Helpers
                 return true;
             }
 
-            if (item is not Weapon weapon)
+            var weapon = item.TryCast<Weapon>();
+            if (weapon == null)
             {
                 return activeNonFir || item.MarkedAsSpawnedInSession;
             }
 
             foreach (KeyValuePair<MongoID, CurrentQuest> quest in new Dictionary<MongoID, CurrentQuest>(activeQuests))
             {
-                if (quest.Value.Condition is not ConditionWeaponAssembly conditionWeaponAssembly)
+                var conditionWeaponAssembly = quest.Value.Condition.TryCast<ConditionWeaponAssembly>();
+                if (conditionWeaponAssembly == null)
                 {
                     continue;
                 }

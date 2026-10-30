@@ -1,7 +1,7 @@
-﻿using AllQuestsCheckmarks.Helpers;
+using AllQuestsCheckmarks.Helpers;
 using EFT.Quests;
 using HarmonyLib;
-using SPT.Reflection.Patching;
+using SPTushonka.Reflection.Patching;
 using System.Reflection;
 
 namespace AllQuestsCheckmarks.Patches
@@ -33,7 +33,7 @@ namespace AllQuestsCheckmarks.Patches
             switch (__instance.QuestStatus)
             {
                 case EQuestStatus.Started:
-                    if (__instance is DailyQuest)
+                    if (__instance.TryCast<DailyQuest>() != null)
                     {
                         Plugin.LogDebug($"Repeatable quest {__instance.Template.Name} accepetd - reload quests");
                         QuestsData.LoadData();
